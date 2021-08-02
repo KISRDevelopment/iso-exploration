@@ -22,7 +22,7 @@ r2_Cyclopentane
 r2_Mcyclopentan
 r2_Cyclohexane
 r2_Benzene
-r2_Ethane_
+r2_Ethane
 r2_Propane
 r2_Methane
 r1_charge_heater
