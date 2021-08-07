@@ -1,0 +1,19 @@
+{
+    "batch_size_p" : 0.1,
+    "n_epochs" : 50,
+    "verbose" : false,
+    "n_input" : 4,
+    "n_hidden" : 10,
+    "n_output" : 3,
+    "hidden_activation" : "tanh",
+    "stochastic" : false,
+    "dropout_p" : 0.5,
+    "epsilon" : 0.05,
+
+    "min_ron" : 83,
+    "min_yield" : 98,
+    
+    "n_init_samples" : 10,
+    "n_samples" : 100,
+    "n_reps" : 50
+}

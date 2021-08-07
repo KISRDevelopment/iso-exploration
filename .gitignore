@@ -3,3 +3,4 @@
 iso-dataset.xlsx
 ~*
 tmp
+__pycache__
