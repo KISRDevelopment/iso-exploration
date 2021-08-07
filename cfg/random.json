@@ -9,10 +9,6 @@
     "stochastic" : false,
     "dropout_p" : 0.5,
     "epsilon" : 1,
-
-    "min_ron" : 83,
-    "min_yield" : 98,
-    
     "n_init_samples" : 10,
     "n_samples" : 100,
     "n_reps" : 50

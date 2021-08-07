@@ -7,10 +7,8 @@ import pandas as pd
 import json
 import nn 
 
-def main(cfg, output_path):
+def main(cfg, min_ron, min_yield, output_path):
     
-    min_ron = cfg['min_ron']
-    min_yield = cfg['min_yield']
     n_init_samples = cfg['n_init_samples']
     n_samples = cfg['n_samples']
     n_reps = cfg['n_reps']
@@ -68,8 +66,12 @@ def main(cfg, output_path):
     return traces
 if __name__ == "__main__":
     import sys 
-    
-    with open(sys.argv[1], 'r') as f:
+    cfg_path = sys.argv[1]
+    min_ron = float(sys.argv[2])
+    min_yield = float(sys.argv[3])
+    output_path = sys.argv[4]
+
+    with open(cfg_path, 'r') as f:
         cfg = json.load(f)
 
-    main(cfg, sys.argv[2])
+    main(cfg, min_ron, min_yield, output_path)
