@@ -11,5 +11,8 @@
     "epsilon" : 0.05,
     "n_init_samples" : 10,
     "n_samples" : 100,
-    "n_reps" : 50
+    "n_reps" : 50,
+    "ch_std" : 10,
+    "ron_std" : 1,
+    "yield_std" : 1
 }

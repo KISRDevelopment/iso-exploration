@@ -7,11 +7,13 @@ import pandas as pd
 import json
 import nn 
 
-def main(cfg, min_ron, min_yield, output_path):
+def main(cfg,output_path):
     
     n_init_samples = cfg['n_init_samples']
     n_samples = cfg['n_samples']
     n_reps = cfg['n_reps']
+    min_ron = cfg['min_ron']
+    min_yield = cfg['min_yield']
 
     # load data 
     df = pd.read_csv('iso.csv')
@@ -22,22 +24,21 @@ def main(cfg, min_ron, min_yield, output_path):
 
     # prepare NN
     traces = []
+    obs_traces = []
     for r in range(n_reps):
         
         model = nn.FeedforwardNN(cfg)
 
         # pick random points to seed the model
         chosen_ix = rng.choice(X.shape[0], n_init_samples, replace=False).tolist()
-        
-        # keep track of available experiments to run
-        avail_indecies = np.ones(X.shape[0]).astype(bool)
-        avail_indecies[chosen_ix] = False 
+        observed_y = [sample(Y, cfg, i) for i in chosen_ix]
 
         while len(chosen_ix) <= n_samples:
             
             # train model
             Xtrain = X[chosen_ix, :]
-            Ytrain = Y[chosen_ix, :]
+            #Ytrain = Y[chosen_ix, :]
+            Ytrain = np.array(observed_y)
 
             feasible_ix = (Ytrain[:,1] >= min_ron) & (Ytrain[:,2] >= min_yield)
             best_feasible_ch = np.min(Ytrain[feasible_ix,0], axis=0) if np.sum(feasible_ix) > 0 else np.inf
@@ -49,7 +50,7 @@ def main(cfg, min_ron, min_yield, output_path):
             if rng.binomial(1, 1-cfg['epsilon']):
                 preds = model.predict(X)
                 feasible_ix = (preds[:,1] >= min_ron) & (preds[:,2] >= min_yield)
-                preds[chosen_ix, 0] = np.inf
+                #preds[chosen_ix, 0] = np.inf
                 preds[~feasible_ix, 0] = np.inf 
                 ix = rng.permutation(preds.shape[0])
                 next_ix = min(ix, key=lambda i: preds[i,0])
@@ -58,12 +59,26 @@ def main(cfg, min_ron, min_yield, output_path):
             
             chosen_ix.append(next_ix)
             
-        traces.append(chosen_ix)
-    
-    traces = pd.DataFrame(data=traces)
-    traces.to_csv(output_path)
+            # sample experiment
+            observed_y.append(sample(Y, cfg, next_ix))
 
-    return traces
+        traces.append([int(i) for i in chosen_ix])
+        obs_traces.append(observed_y)
+
+    with open(output_path, 'w') as f:
+        json.dump({
+            "cfg" : cfg,
+            "traces" : traces,
+            "obs_traces" : obs_traces
+        }, f, indent=4)
+    
+def sample(Y, cfg, ix):
+    return [
+        np.maximum(0, Y[ix, 0] + rng.normal(0, cfg['ch_std'])),
+        np.clip(Y[ix, 1] + rng.normal(0, cfg['ron_std']), 0, 100),
+        np.clip(Y[ix, 2] + rng.normal(0, cfg['yield_std']), 0, 100)
+    ]
+
 if __name__ == "__main__":
     import sys 
     cfg_path = sys.argv[1]
@@ -74,4 +89,6 @@ if __name__ == "__main__":
     with open(cfg_path, 'r') as f:
         cfg = json.load(f)
 
-    main(cfg, min_ron, min_yield, output_path)
+    cfg['min_ron'] = min_ron
+    cfg['min_yield'] = min_yield
+    main(cfg, output_path)
