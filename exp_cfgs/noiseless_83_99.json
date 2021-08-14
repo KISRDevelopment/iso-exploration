@@ -1,0 +1,13 @@
+{
+    "n_init_samples" : 10,
+    "n_samples" : 200,
+    "n_reps" : 50,
+    "ch_std" : 0,
+    "ron_std" : 0,
+    "yield_std" : 0,
+    "min_ron" : 83,
+    "min_yield" : 99,
+    "ch_rel_perc" : 0,
+    "ron_delta" : 0,
+    "yield_delta" : 0
+}

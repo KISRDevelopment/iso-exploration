@@ -8,8 +8,5 @@
     "hidden_activation" : "tanh",
     "stochastic" : false,
     "dropout_p" : 0.5,
-    "epsilon" : 1,
-    "n_init_samples" : 10,
-    "n_samples" : 100,
-    "n_reps" : 50
+    "epsilon" : 0.10
 }
