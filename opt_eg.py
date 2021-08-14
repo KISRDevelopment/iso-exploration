@@ -46,14 +46,18 @@ def main(exp_cfg, model_cfg, output_path):
             if model_cfg['epsilon'] < 1:
                 model.train(Xtrain, Ytrain)
             
+            # pick out a region of X that is eligible for exploration
+            eligible_next_ix = determine_next_eligible_region(exp_cfg, Xtrain, X)
+
             if rng.binomial(1, 1-model_cfg['epsilon']):
                 preds = model.predict(X)
-                feasible_ix = (preds[:,1] >= min_ron) & (preds[:,2] >= min_yield)
+                feasible_ix = (preds[:,1] >= min_ron) & (preds[:,2] >= min_yield) & eligible_next_ix
                 preds[~feasible_ix, 0] = np.inf 
                 ix = rng.permutation(preds.shape[0])
                 next_ix = min(ix, key=lambda i: preds[i,0])
             else:
-                next_ix = rng.choice(X.shape[0])
+                eligible_indecies = np.where(eligible_next_ix)[0]
+                next_ix = rng.choice(eligible_indecies)
             
             chosen_ix.append(next_ix)
             
@@ -71,6 +75,15 @@ def main(exp_cfg, model_cfg, output_path):
             "obs_traces" : obs_traces
         }, f, indent=4)
     
+def determine_next_eligible_region(exp_cfg, Xtrain, X):
+
+    max_delta = np.array(exp_cfg['max_selection_delta'])
+    last_exp = Xtrain[-1,:]
+
+    ix = np.all(np.abs(X - last_exp) <= max_delta, axis=1)
+    print("Eligible next region: %d (Total %d)" % (np.sum(ix), X.shape[0]))
+    return ix 
+
 def sample(Y, cfg, ix):
     return [
         np.maximum(0, add_noise_rel_perc(Y[ix, 0], cfg['ch_rel_perc'])),
