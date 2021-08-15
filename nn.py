@@ -1,6 +1,7 @@
 import tensorflow as tf 
 import tensorflow.keras as keras 
 import numpy as np 
+import numpy.random as rng 
 
 def zscore(X):
 
@@ -17,11 +18,18 @@ class FeedforwardNN:
                 
     def train(self, Xtrain, Ytrain):
         
-        self._make_model()
+        if self._cfg.get('independent_outputs', False):
+            self._make_model_independent_outputs()
+        else:
+            self._make_model()
+        #print(self._model.summary())
         
         # normalize inputs and outputs for better convergence
         Xtrain, _, _ = zscore(Xtrain)
         Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
+        
+        if self._cfg.get('scramble', False):
+            Xtrain = Xtrain[rng.permutation(Xtrain.shape[0]), :]
         
         self._model.fit(Xtrain, 
                         Ytrain, 
@@ -48,6 +56,31 @@ class FeedforwardNN:
 
         self._model = model 
     
+    def _make_model_independent_outputs(self):
+        cfg = self._cfg 
+        
+        keras.backend.clear_session()
+
+        input_layer = keras.layers.Input(shape=(cfg['n_input'],))
+        layer = self._make_dropout(input_layer)
+        
+        output_nodes = []
+        for i in range(cfg['n_output']):
+            hidden_layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
+            hidden_layer = self._make_dropout(hidden_layer)
+            output_node = keras.layers.Dense(1, activation='linear')(hidden_layer)
+            output_nodes.append(output_node)
+        
+        output_layer = keras.layers.Concatenate()(output_nodes)
+        
+        model = keras.Model(input_layer, output_layer)
+        model.compile(
+            loss=keras.losses.MeanAbsoluteError(),
+            optimizer=keras.optimizers.Nadam()
+        )
+
+        self._model = model 
+        
     def _make_dropout(self, input_layer):
         if self._cfg['stochastic']:
             return keras.layers.Dropout(self._cfg['dropout_p'])(input_layer, training=True)

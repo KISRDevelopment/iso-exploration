@@ -1,6 +1,6 @@
 {
     "n_init_samples" : 10,
-    "n_samples" : 200,
+    "n_samples" : 500,
     "n_reps" : 50,
     "ch_std" : 0,
     "ron_std" : 0,
@@ -9,5 +9,7 @@
     "min_yield" : 99,
     "ch_rel_perc" : 0,
     "ron_delta" : 0,
-    "yield_delta" : 0
+    "yield_delta" : 0,
+
+    "max_selection_delta" : [1000, 1000, 1000, 1000]
 }

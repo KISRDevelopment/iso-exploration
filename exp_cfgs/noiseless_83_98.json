@@ -9,5 +9,7 @@
     "min_yield" : 98,
     "ch_rel_perc" : 0,
     "ron_delta" : 0,
-    "yield_delta" : 0
+    "yield_delta" : 0,
+
+    "max_selection_delta" : [1000, 1000, 1000, 1000]
 }
