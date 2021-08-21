@@ -1,0 +1,36 @@
+{
+    "output_cols" : ["r1_charge_heater", "process_ron", "process_yield"],
+    "output_path" : "tmp/kpi_preds.npz",
+    "models" : [
+        {
+            "name" : "Null",
+            "batch_size_p" : 0.1,
+            "n_epochs" : 250,
+            "verbose" : false,
+            "n_input" : 4,
+            "n_hidden" : 10,
+            "n_output" : 3,
+            "hidden_activation" : "tanh",
+            "stochastic" : false,
+            "dropout_p" : 0.5,
+            "scramble" : true,
+            "independent_outputs" : false
+        },
+        {
+            "name" : "ANN",
+            "batch_size_p" : 0.1,
+            "n_epochs" : 250,
+            "verbose" : false,
+            "n_input" : 4,
+            "n_hidden" : 10,
+            "n_output" : 3,
+            "hidden_activation" : "tanh",
+            "stochastic" : false,
+            "dropout_p" : 0.5,
+            "scramble" : false,
+            "independent_outputs" : false
+        }
+    ],
+    "test_prop" : 0.75,
+    "reps" : 10
+}

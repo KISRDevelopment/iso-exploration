@@ -18,15 +18,14 @@ class FeedforwardNN:
                 
     def train(self, Xtrain, Ytrain):
         
-        if self._cfg.get('independent_outputs', False):
-            self._make_model_independent_outputs()
-        else:
-            self._make_model()
+        self._make_model()
         #print(self._model.summary())
         
         # normalize inputs and outputs for better convergence
         Xtrain, _, _ = zscore(Xtrain)
-        Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
+
+        if not self._cfg.get('categorical', False):
+            Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
         
         if self._cfg.get('scramble', False):
             Xtrain = Xtrain[rng.permutation(Xtrain.shape[0]), :]
@@ -46,41 +45,22 @@ class FeedforwardNN:
         layer = self._make_dropout(input_layer)
         layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
         layer = self._make_dropout(layer)
-        output_layer = keras.layers.Dense(cfg['n_output'], activation='linear')(layer)
+
+        output_activation = 'linear'
+        loss = keras.losses.MeanAbsoluteError
+        if cfg.get('categorical', False):
+            output_activation = 'softmax'
+            loss = keras.losses.CategoricalCrossentropy
+        output_layer = keras.layers.Dense(cfg['n_output'], activation=output_activation)(layer)
         
         model = keras.Model(input_layer, output_layer)
         model.compile(
-            loss=keras.losses.MeanAbsoluteError(),
+            loss=loss(),
             optimizer=keras.optimizers.Nadam()
         )
 
         self._model = model 
     
-    def _make_model_independent_outputs(self):
-        cfg = self._cfg 
-        
-        keras.backend.clear_session()
-
-        input_layer = keras.layers.Input(shape=(cfg['n_input'],))
-        layer = self._make_dropout(input_layer)
-        
-        output_nodes = []
-        for i in range(cfg['n_output']):
-            hidden_layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
-            hidden_layer = self._make_dropout(hidden_layer)
-            output_node = keras.layers.Dense(1, activation='linear')(hidden_layer)
-            output_nodes.append(output_node)
-        
-        output_layer = keras.layers.Concatenate()(output_nodes)
-        
-        model = keras.Model(input_layer, output_layer)
-        model.compile(
-            loss=keras.losses.MeanAbsoluteError(),
-            optimizer=keras.optimizers.Nadam()
-        )
-
-        self._model = model 
-        
     def _make_dropout(self, input_layer):
         if self._cfg['stochastic']:
             return keras.layers.Dropout(self._cfg['dropout_p'])(input_layer, training=True)
@@ -101,5 +81,8 @@ class FeedforwardNN:
         return samples
 
     def _predict(self, X):
-        return self._model.predict(X) * self._Ytrain_std + self._Ytrain_mu 
+        if not self._cfg.get('categorical', False):
+            return self._model.predict(X) * self._Ytrain_std + self._Ytrain_mu 
+        else:
+            return self._model.predict(X)
 

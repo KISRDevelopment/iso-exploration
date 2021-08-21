@@ -3,8 +3,11 @@ import pandas as pd
 import nn
 import numpy.random as rng
 import json
+import sys 
 
-with open('predict_mass_fractions.json', 'r') as f:
+path = sys.argv[1]
+
+with open(path, 'r') as f:
     cfg = json.load(f)
 
 df = pd.read_csv('iso.csv')
@@ -44,4 +47,4 @@ for r in range(cfg['reps']):
     
     list_yhat.append(sublist_yhat)
 
-np.savez("tmp/mass_fractions_preds.npz", list_train_ix=list_train_ix, list_yhat=list_yhat, cfg=cfg)
+np.savez(cfg['output_path'], list_train_ix=list_train_ix, list_yhat=list_yhat, cfg=cfg)
