@@ -86,3 +86,5 @@ class FeedforwardNN:
         else:
             return self._model.predict(X)
 
+    def evaluate(self, X, Y):
+        return self._model.evaluate(X, Y)
