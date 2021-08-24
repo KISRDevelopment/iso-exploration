@@ -4,7 +4,7 @@ import nn
 import numpy.random as rng
 import json
 import sys 
-
+import tensorflow as tf
 path = sys.argv[1]
 
 with open(path, 'r') as f:
@@ -21,6 +21,8 @@ Ytest = np.array(test_df[cfg['output_cols']])
 print("Test size: %d" % (Xtest.shape[0]))
 
 aes = []
+cce = tf.keras.losses.CategoricalCrossentropy()
+
 for model_cfg in cfg['models']:
 
     model = nn.FeedforwardNN(model_cfg)
@@ -31,9 +33,12 @@ for model_cfg in cfg['models']:
     
     print("%32s %8.4f" % (model_cfg['name'], loss))
 
+
     # (n_samplesx19)
     yhat = model.predict(Xtest)
-    
+    #xe = np.mean(-np.sum(Ytest*np.log(yhat), axis=1))
+    xe = cce(Ytest, yhat).numpy()
+    print(xe)
     ae = np.abs(yhat - Ytest)
 
     aes.append(np.mean(ae, axis=0))
