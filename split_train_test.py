@@ -6,7 +6,7 @@ import pandas as pd
 from skopt.sampler import Lhs
 
 np.random.seed(7567567)
-P_TRAIN = 0.2
+P_TRAIN = 0.5
 
 # read dataset
 df = pd.read_csv("iso.csv")

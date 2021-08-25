@@ -4,21 +4,21 @@
     {
             "name" : "ANN",
             "batch_size_p" : 0.1,
-            "n_epochs" : 250,
-            "verbose" : true,
+            "n_epochs" : 1000,
+            "verbose" : false,
             "n_input" : 4,
             "n_hidden" : 20,
             "n_output" : 19,
             "hidden_activation" : "tanh",
             "stochastic" : false,
-            "dropout_p" : 0.5,
+            "dropout_p" : 0,
             "scramble" : false,
-            "categorical" : true
+            "categorical" : true,
+            "patience" : 50
     },
     "hyperparams" : {
-        "n_hidden" : [5, 10, 20, 50, 100],
-        "hidden_activation" : ["tanh", "relu"],
-        "dropout_p" : [0, 0.1, 0.25, 0.5]
+        "n_hidden" : [1, 5, 10, 20, 50, 100],
+        "hidden_activation" : ["tanh", "relu"]
     },
     "folds" : 5,
     "dataset" : "iso_train.csv"

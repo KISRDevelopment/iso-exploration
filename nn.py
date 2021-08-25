@@ -16,25 +16,34 @@ class FeedforwardNN:
     def __init__(self, cfg):
         self._cfg = cfg 
                 
-    def train(self, Xtrain, Ytrain):
+    def train(self, Xtrain, Ytrain, Xvalid=None, Yvalid=None):
         
         self._make_model()
         #print(self._model.summary())
         
         # normalize inputs and outputs for better convergence
         Xtrain, _, _ = zscore(Xtrain)
+        Xvalid,_,_ = zscore(Xvalid)
 
         if not self._cfg.get('categorical', False):
             Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
-        
+            Yvalid = (Yvalid - self._Ytrain_mu) / self._Ytrain_std
+            
         if self._cfg.get('scramble', False):
             Xtrain = Xtrain[rng.permutation(Xtrain.shape[0]), :]
         
+        callbacks = []
+        if Xvalid is not None:
+            callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=self._cfg['patience'], restore_best_weights=True)
+            callbacks.append(callback)
+        
         self._model.fit(Xtrain, 
                         Ytrain, 
-                        batch_size=int(Xtrain.shape[0] * self._cfg['batch_size_p']), 
+                        batch_size=int(Xtrain.shape[0] * self._cfg['batch_size_p']),
+                        validation_data=(Xvalid, Yvalid),
                         epochs=self._cfg['n_epochs'], 
-                        verbose=self._cfg['verbose'])
+                        verbose=self._cfg['verbose'],
+                        callbacks=callbacks)
         
     def _make_model(self):
         cfg = self._cfg 
@@ -42,20 +51,21 @@ class FeedforwardNN:
         keras.backend.clear_session()
 
         input_layer = keras.layers.Input(shape=(cfg['n_input'],))
-        layer = self._make_dropout(input_layer)
+        layer = input_layer
+        layer = self._make_dropout(layer)
         layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
         layer = self._make_dropout(layer)
 
         output_activation = 'linear'
-        loss = keras.losses.MeanAbsoluteError
+        loss = keras.losses.MeanAbsoluteError()
         if cfg.get('categorical', False):
             output_activation = 'softmax'
-            loss = keras.losses.CategoricalCrossentropy
+            loss = cce
         output_layer = keras.layers.Dense(cfg['n_output'], activation=output_activation)(layer)
         
         model = keras.Model(input_layer, output_layer)
         model.compile(
-            loss=loss(),
+            loss=loss,
             optimizer=keras.optimizers.Nadam()
         )
 
@@ -78,6 +88,7 @@ class FeedforwardNN:
             samples.append(self._predict(X))
         
         samples = np.array(samples)
+        
         return samples
 
     def _predict(self, X):
@@ -86,5 +97,5 @@ class FeedforwardNN:
         else:
             return self._model.predict(X)
 
-    def evaluate(self, X, Y):
-        return self._model.evaluate(X, Y)
+def cce(ytrue, ypred):
+    return -tf.reduce_mean(tf.reduce_sum(ytrue * tf.math.log(ypred), axis=1))

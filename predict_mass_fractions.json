@@ -23,39 +23,47 @@
     "models": [
         {
             "name": "Null",
-            "batch_size_p": 0.1,
-            "n_epochs": 250,
-            "verbose": false,
-            "n_input": 4,
-            "n_hidden": 20,
-            "n_output": 19,
-            "hidden_activation": "tanh",
-            "stochastic": false,
-            "dropout_p": 0.5,
-            "scramble": true,
-            "categorical": true
-        },
-        {
-            "name": "ANN",
-            "batch_size_p": 0.1,
-            "n_epochs": 250,
-            "verbose": false,
+            "batch_size_p": 1,
+            "n_epochs": 1000,
+            "verbose": true,
             "n_input": 4,
             "n_hidden": 5,
             "n_output": 19,
             "hidden_activation": "tanh",
             "stochastic": false,
-            "dropout_p": 0.1,
+            "dropout_p": 0,
+            "scramble": true,
+            "categorical": false,
+            "patience": 50
+        },
+        {
+            "name": "ANN",
+            "batch_size_p": 1,
+            "n_epochs": 1000,
+            "verbose": true,
+            "n_input": 4,
+            "n_hidden": 20,
+            "n_output": 19,
+            "hidden_activation": "tanh",
+            "stochastic": false,
+            "dropout_p": 0,
             "scramble": false,
-            "categorical": true,
+            "categorical": false,
+            "patience": 50,
             "results": [
-                3.423525094985962,
-                3.4290966987609863,
-                3.841555595397949,
-                2.938760995864868,
-                2.6269114017486572
+                2.118720769882202,
+                2.117640256881714,
+                2.316359758377075,
+                2.1206252574920654,
+                2.1191420555114746
             ],
-            "mean_loss": 3.2519699573516845
+            "comb": [
+                20,
+                "relu"
+            ],
+            "mean_loss": 2.158497619628906
         }
-    ]
+    ],
+    "p_valid": 0.2,
+    "ensemble_size": 1
 }
