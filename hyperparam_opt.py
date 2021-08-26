@@ -7,7 +7,9 @@ import sys
 from sklearn.model_selection import KFold
 import itertools 
 import tensorflow as tf 
+
 path = sys.argv[1]
+output_path = sys.argv[2]
 
 P_VALID = 0.2
 
@@ -74,5 +76,5 @@ best_cfg = min(cfgs, key=lambda c: c['mean_loss'])
 print("Best:")
 print(json.dumps(best_cfg))
 
-with open('hyperparam_opt_results.json', 'w') as f:
+with open(output_path, 'w') as f:
    json.dump(cfgs, f, indent=4)

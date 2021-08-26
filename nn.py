@@ -18,7 +18,10 @@ class FeedforwardNN:
                 
     def train(self, Xtrain, Ytrain, Xvalid=None, Yvalid=None):
         
-        self._make_model()
+        if self._cfg.get('constrained', False):
+            self._make_model_constrained()
+        else:
+            self._make_model()
         #print(self._model.summary())
         
         # normalize inputs and outputs for better convergence
@@ -67,6 +70,29 @@ class FeedforwardNN:
 
         self._model = model 
     
+    def _make_model_constrained(self):
+        cfg = self._cfg 
+        
+        keras.backend.clear_session()
+
+        input_layer = keras.layers.Input(shape=(cfg['n_input'],))
+        layer = self._make_dropout(input_layer)
+        preouts = []
+        for i in range(cfg['n_output']):
+            sub_nn = keras.layers.Dense(cfg['n_hidden'] // cfg['n_output'], activation=cfg['hidden_activation'])(layer)
+            sub_nn = self._make_dropout(sub_nn)
+            sub_nn = keras.layers.Dense(1, activation='linear')(sub_nn)
+            preouts.append(sub_nn)
+        output_layer = keras.layers.Concatenate()(preouts)
+        
+        model = keras.Model(input_layer, output_layer)
+        model.compile(
+            loss=keras.losses.MeanAbsoluteError(),
+            optimizer=keras.optimizers.Nadam()
+        )
+
+        self._model = model 
+
     def _make_dropout(self, input_layer):
         if self._cfg['stochastic']:
             return keras.layers.Dropout(self._cfg['dropout_p'])(input_layer, training=True)
@@ -88,7 +114,7 @@ class FeedforwardNN:
         return samples
 
     def _predict(self, X):
-        return self._model.predict(X)
+        return self._model.predict(X) * self._Ytrain_std + self._Ytrain_mu
 
     def evaluate(self, X, Y):
         X,_,_ = zscore(X)
