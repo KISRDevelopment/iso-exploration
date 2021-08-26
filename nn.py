@@ -25,9 +25,8 @@ class FeedforwardNN:
         Xtrain, _, _ = zscore(Xtrain)
         Xvalid,_,_ = zscore(Xvalid)
 
-        if not self._cfg.get('categorical', False):
-            Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
-            Yvalid = (Yvalid - self._Ytrain_mu) / self._Ytrain_std
+        Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
+        Yvalid = (Yvalid - self._Ytrain_mu) / self._Ytrain_std
             
         if self._cfg.get('scramble', False):
             Xtrain = Xtrain[rng.permutation(Xtrain.shape[0]), :]
@@ -58,9 +57,6 @@ class FeedforwardNN:
 
         output_activation = 'linear'
         loss = keras.losses.MeanAbsoluteError()
-        if cfg.get('categorical', False):
-            output_activation = 'softmax'
-            loss = cce
         output_layer = keras.layers.Dense(cfg['n_output'], activation=output_activation)(layer)
         
         model = keras.Model(input_layer, output_layer)
@@ -92,10 +88,9 @@ class FeedforwardNN:
         return samples
 
     def _predict(self, X):
-        if not self._cfg.get('categorical', False):
-            return self._model.predict(X) * self._Ytrain_std + self._Ytrain_mu 
-        else:
-            return self._model.predict(X)
+        return self._model.predict(X)
 
-def cce(ytrue, ypred):
-    return -tf.reduce_mean(tf.reduce_sum(ytrue * tf.math.log(ypred), axis=1))
+    def evaluate(self, X, Y):
+        X,_,_ = zscore(X)
+        Y = (Y - self._Ytrain_mu) / self._Ytrain_std
+        return self._model.evaluate(X, Y)

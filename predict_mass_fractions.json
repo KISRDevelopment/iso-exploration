@@ -23,7 +23,7 @@
     "models": [
         {
             "name": "Null",
-            "batch_size_p": 1,
+            "batch_size_p": 0.1,
             "n_epochs": 1000,
             "verbose": true,
             "n_input": 4,
@@ -33,22 +33,22 @@
             "stochastic": false,
             "dropout_p": 0,
             "scramble": true,
-            "categorical": false,
+            "categorical": true,
             "patience": 50
         },
         {
             "name": "ANN",
-            "batch_size_p": 1,
+            "batch_size_p": 0.1,
             "n_epochs": 1000,
             "verbose": true,
             "n_input": 4,
-            "n_hidden": 20,
+            "n_hidden": 5,
             "n_output": 19,
             "hidden_activation": "tanh",
             "stochastic": false,
             "dropout_p": 0,
             "scramble": false,
-            "categorical": false,
+            "categorical": true,
             "patience": 50,
             "results": [
                 2.118720769882202,

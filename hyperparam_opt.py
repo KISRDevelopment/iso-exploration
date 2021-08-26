@@ -34,8 +34,6 @@ for comb in itertools.product(*search_space):
     
 # evaluate CV performance of each combination
 kf = KFold(n_splits=cfg['folds'])
-cce = tf.keras.losses.CategoricalCrossentropy()
-
 for train_index, test_index in kf.split(X):
 
     rng.shuffle(train_index)
@@ -63,8 +61,8 @@ for train_index, test_index in kf.split(X):
         model.train(Xtrain, Ytrain, Xvalid, Yvalid)
 
         # test
-        Yhat = model.predict(Xtest)
-        loss = cce(Ytest, Yhat).numpy()
+        loss = model.evaluate(Xtest, Ytest)
+
         cfg['results'].append(float(loss))
         print("[%s] Loss: %f" % (cfg['comb'],loss))
 
