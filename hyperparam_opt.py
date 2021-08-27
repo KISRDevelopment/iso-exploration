@@ -7,6 +7,7 @@ import sys
 from sklearn.model_selection import KFold
 import itertools 
 import tensorflow as tf 
+import feature_reader
 
 path = sys.argv[1]
 output_path = sys.argv[2]
@@ -18,7 +19,8 @@ with open(path, 'r') as f:
 
 # read dataset
 df = pd.read_csv(cfg['dataset'])
-X = np.array(df[['r1_temp', 'r2_temp', 'r1_pressure', 'r2_pressure']])
+loader_func = getattr(feature_reader, cfg['model']['features'])
+X = loader_func(df)
 Y = np.array(df[cfg['output_cols']])
 print("Dataset size: %d" % (X.shape[0]))
 
@@ -35,7 +37,7 @@ for comb in itertools.product(*search_space):
     cfgs.append(new_cfg)
     
 # evaluate CV performance of each combination
-kf = KFold(n_splits=cfg['folds'])
+kf = KFold(n_splits=cfg['folds'], shuffle=True, random_state=51514)
 for train_index, test_index in kf.split(X):
 
     rng.shuffle(train_index)
@@ -59,7 +61,6 @@ for train_index, test_index in kf.split(X):
         model = nn.FeedforwardNN(cfg)
 
         # train
-        
         model.train(Xtrain, Ytrain, Xvalid, Yvalid)
 
         # test
@@ -68,11 +69,7 @@ for train_index, test_index in kf.split(X):
         cfg['results'].append(float(loss))
         print("[%s] Loss: %f" % (cfg['comb'],loss))
 
-# summarize model performance
-for cfg in cfgs:
-    cfg['mean_loss'] = np.mean(cfg['results'])
-
-best_cfg = min(cfgs, key=lambda c: c['mean_loss'])
+best_cfg = min(cfgs, key=lambda c: np.mean(c['results']))
 print("Best:")
 print(json.dumps(best_cfg))
 

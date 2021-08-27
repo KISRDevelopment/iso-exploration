@@ -5,52 +5,40 @@ import numpy.random as rng
 import json
 import sys 
 import tensorflow as tf
+import feature_reader
+
 path = sys.argv[1]
+output_path = sys.argv[2]
 
 with open(path, 'r') as f:
     cfg = json.load(f)
+loader_func = getattr(feature_reader, cfg['model']['features'])
 
 train_df = pd.read_csv('iso_train.csv')
-Xtrain = np.array(train_df[['r1_temp', 'r2_temp', 'r1_pressure', 'r2_pressure']])
-Ytrain = np.array(train_df[cfg['output_cols']])
-print("Train size: %d" % (Xtrain.shape[0]))
+X = loader_func(train_df)
+Y = np.array(train_df[cfg['output_cols']])
 
-ix = rng.permutation(Xtrain.shape[0])
-n_valid = int(cfg['p_valid'] * Xtrain.shape[0])
+valid_ix = train_df['is_valid'] == 1
+train_ix = train_df['is_valid'] == 0
 
-valid_ix = ix[:n_valid]
-train_ix = ix[n_valid:]
+Xtrain = X[train_ix,:]
+Ytrain = Y[train_ix,:]
+Xvalid = X[valid_ix,:]
+Yvalid = Y[valid_ix,:]
 
+print("Train size: %d, Validation: %d" % (Xtrain.shape[0], Xvalid.shape[0]))
 
-Xvalid = Xtrain[valid_ix,:]
-Yvalid = Ytrain[valid_ix,:]
-Xtrain = Xtrain[train_ix,:]
-Ytrain = Ytrain[train_ix,:]
-
-
-print("Train size: %d, Valid size: %d" % (Xtrain.shape[0], Xvalid.shape[0]))
 test_df = pd.read_csv('iso_test.csv')
-Xtest = np.array(test_df[['r1_temp', 'r2_temp', 'r1_pressure', 'r2_pressure']])
+Xtest = loader_func(test_df)
 Ytest = np.array(test_df[cfg['output_cols']])
 print("Test size: %d" % (Xtest.shape[0]))
 
-models_cfgs = []
-for path in cfg['model_cfg_paths']:
-    with open(path, 'r') as f:
-        models_cfgs.append(json.load(f))
+model = nn.FeedforwardNN(cfg['model'])
+model.train(Xtrain, Ytrain, Xvalid, Yvalid)
+yhat = model.predict(Xtest)
+ae = np.abs(yhat - Ytest)
+mae_by_output = [float(e) for e in np.mean(ae, axis=0)]
+cfg['test_mae_by_output'] = { c: v for c,v in zip(cfg['output_cols'], mae_by_output) }
 
-for model_cfg in models_cfgs:
-    print(model_cfg['name'])
-    model = nn.FeedforwardNN(model_cfg)
-
-    model.train(Xtrain, Ytrain, Xvalid, Yvalid)
-    yhat = model.predict(Xtest)
-    
-    ae = np.abs(yhat - Ytest)
-
-    mae_by_output = [float(e) for e in np.mean(ae, axis=0)]
-    model_cfg['test_mae_by_output'] = { c: v for c,v in zip(cfg['output_cols'], mae_by_output) }
-
-cfg['model_cfgs'] = models_cfgs
-with open('evaluation_results.json', 'w') as f:
+with open(output_path, 'w') as f:
     json.dump(cfg, f, indent=4)

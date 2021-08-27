@@ -1,0 +1,76 @@
+{
+    "output_cols": [
+        "process_Hydrogen",
+        "process_Methane",
+        "process_Ethane",
+        "process_Propane",
+        "process_i-Butane",
+        "process_n-Butane",
+        "process_i-Pentane",
+        "process_n-Pentane",
+        "process_Cyclopentane",
+        "process_22-Mbutane",
+        "process_23-Mbutane",
+        "process_2-Mpentane",
+        "process_3-Mpentane",
+        "process_n-Hexane",
+        "process_Mcyclopentan",
+        "process_Benzene",
+        "process_Cyclohexane",
+        "process_2-Mhexane",
+        "process_n-Heptane"
+    ],
+    "model": {
+        "name": "ANN",
+        "batch_size_p": 1.0,
+        "n_epochs": 10000,
+        "verbose": true,
+        "n_input": 4,
+        "n_hidden": 20,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features"
+    },
+    "hyperparams": {
+        "n_hidden": [
+            1,
+            5,
+            10,
+            20,
+            50,
+            100
+        ],
+        "batch_size_p": [
+            0.1,
+            0.5,
+            1.0
+        ]
+    },
+    "folds": 5,
+    "dataset": "iso_train.csv",
+    "test_mae_by_output": {
+        "process_Hydrogen": 1.325585270246372e-05,
+        "process_Methane": 4.116867403568378e-05,
+        "process_Ethane": 0.00016992393195303278,
+        "process_Propane": 0.0002941398679418369,
+        "process_i-Butane": 0.0004153758731937501,
+        "process_n-Butane": 0.0002604107636714589,
+        "process_i-Pentane": 0.0016713238105918956,
+        "process_n-Pentane": 0.001748542437106238,
+        "process_Cyclopentane": 6.509711430369572e-06,
+        "process_22-Mbutane": 0.0025392690626446623,
+        "process_23-Mbutane": 0.0002012786977438987,
+        "process_2-Mpentane": 0.0006096696699729083,
+        "process_3-Mpentane": 0.00043423349229771384,
+        "process_n-Hexane": 0.0009675145615293546,
+        "process_Mcyclopentan": 0.00023172018090360775,
+        "process_Benzene": 5.419112312747088e-06,
+        "process_Cyclohexane": 0.0001966129143620407,
+        "process_2-Mhexane": 0.00023447137308218953,
+        "process_n-Heptane": 0.0002457968054423468
+    }
+}

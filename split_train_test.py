@@ -5,8 +5,9 @@ import numpy as np
 import pandas as pd 
 from skopt.sampler import Lhs
 
-np.random.seed(542345)
+np.random.seed(896784)
 P_TRAIN = 0.25
+P_VALID = 0.2
 
 # read dataset
 df = pd.read_csv("iso.csv")
@@ -30,10 +31,16 @@ while len(sampled_parameters_set) < n_train:
 sampled_parameters = list(sampled_parameters_set)
 
 # build training and testing dfs
-train_df = df.loc[sampled_parameters]
+train_df = df.loc[sampled_parameters].copy()
 test_df = df.loc[list(parameters_set - sampled_parameters_set)]
 
-print("Traing size: %d, test size: %d" % (train_df.shape[0], test_df.shape[0]))
+ix = np.random.permutation(train_df.shape[0])
+n_valid = int(P_VALID * train_df.shape[0])
+is_valid = np.zeros(train_df.shape[0]).astype(bool)
+is_valid[ix[:n_valid]] = True
+train_df['is_valid'] = is_valid
+
+print("Traing size: %d (validation: %d), test size: %d" % (train_df.shape[0], np.sum(is_valid), test_df.shape[0]))
 
 train_df.to_csv("iso_train.csv", index=False)
 test_df.to_csv("iso_test.csv", index=False)

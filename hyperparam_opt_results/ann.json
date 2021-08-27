@@ -1,0 +1,470 @@
+[
+    {
+        "name": "ANN",
+        "batch_size_p": 0.1,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 1,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.3782544434070587,
+            0.4127284586429596,
+            0.4046458899974823,
+            0.3720121383666992,
+            0.42400869727134705
+        ],
+        "comb": [
+            1,
+            0.1
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.5,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 1,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.3869715929031372,
+            0.4219733476638794,
+            0.40887385606765747,
+            0.3743293583393097,
+            0.4317180812358856
+        ],
+        "comb": [
+            1,
+            0.5
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 1.0,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 1,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.37961411476135254,
+            0.41239458322525024,
+            0.4054352045059204,
+            0.37215837836265564,
+            0.4243514835834503
+        ],
+        "comb": [
+            1,
+            1.0
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.1,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 5,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.154466912150383,
+            0.18060287833213806,
+            0.14740557968616486,
+            0.18111029267311096,
+            0.2014022320508957
+        ],
+        "comb": [
+            5,
+            0.1
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.5,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 5,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.22064542770385742,
+            0.2155301719903946,
+            0.2150156944990158,
+            0.17482729256153107,
+            0.2509614825248718
+        ],
+        "comb": [
+            5,
+            0.5
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 1.0,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 5,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.11764009296894073,
+            0.18920660018920898,
+            0.15978413820266724,
+            0.15026001632213593,
+            0.1655035763978958
+        ],
+        "comb": [
+            5,
+            1.0
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.1,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 10,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.12539470195770264,
+            0.15273334085941315,
+            0.14781279861927032,
+            0.13864335417747498,
+            0.16418835520744324
+        ],
+        "comb": [
+            10,
+            0.1
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.5,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 10,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.3283245861530304,
+            0.19298627972602844,
+            0.3454561233520508,
+            0.20299193263053894,
+            0.19922970235347748
+        ],
+        "comb": [
+            10,
+            0.5
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 1.0,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 10,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.08213657140731812,
+            0.14573614299297333,
+            0.1157633438706398,
+            0.1164916381239891,
+            0.1611708700656891
+        ],
+        "comb": [
+            10,
+            1.0
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.1,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 20,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.10607384890317917,
+            0.15468207001686096,
+            0.1362432837486267,
+            0.13646407425403595,
+            0.15719079971313477
+        ],
+        "comb": [
+            20,
+            0.1
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.5,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 20,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.32256996631622314,
+            0.19891352951526642,
+            0.18576212227344513,
+            0.1681550294160843,
+            0.22105370461940765
+        ],
+        "comb": [
+            20,
+            0.5
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 1.0,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 20,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.10363104939460754,
+            0.14348499476909637,
+            0.1097765862941742,
+            0.1138380691409111,
+            0.1435054987668991
+        ],
+        "comb": [
+            20,
+            1.0
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.1,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 50,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.11439809203147888,
+            0.15243852138519287,
+            0.1332918256521225,
+            0.12694300711154938,
+            0.14616353809833527
+        ],
+        "comb": [
+            50,
+            0.1
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.5,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 50,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.32235628366470337,
+            0.36224156618118286,
+            0.3437173664569855,
+            0.3140312433242798,
+            0.36985307931900024
+        ],
+        "comb": [
+            50,
+            0.5
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 1.0,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 50,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.12073060870170593,
+            0.16678151488304138,
+            0.14415979385375977,
+            0.1296677589416504,
+            0.14772045612335205
+        ],
+        "comb": [
+            50,
+            1.0
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.1,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 100,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.1090637668967247,
+            0.14328759908676147,
+            0.14080722630023956,
+            0.1283044070005417,
+            0.13943946361541748
+        ],
+        "comb": [
+            100,
+            0.1
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 0.5,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 100,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.3245631456375122,
+            0.36074164509773254,
+            0.34289905428886414,
+            0.316958487033844,
+            0.38115859031677246
+        ],
+        "comb": [
+            100,
+            0.5
+        ]
+    },
+    {
+        "name": "ANN",
+        "batch_size_p": 1.0,
+        "n_epochs": 10000,
+        "verbose": false,
+        "n_input": 4,
+        "n_hidden": 100,
+        "n_output": 19,
+        "hidden_activation": "tanh",
+        "stochastic": false,
+        "dropout_p": 0,
+        "scramble": false,
+        "patience": 50,
+        "features": "load_ann_features",
+        "results": [
+            0.12439741939306259,
+            0.15343624353408813,
+            0.14341430366039276,
+            0.14417287707328796,
+            0.1766822636127472
+        ],
+        "comb": [
+            100,
+            1.0
+        ]
+    }
+]

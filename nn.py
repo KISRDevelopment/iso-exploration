@@ -17,7 +17,8 @@ class FeedforwardNN:
         self._cfg = cfg 
                 
     def train(self, Xtrain, Ytrain, Xvalid=None, Yvalid=None):
-        
+        self._cfg['n_input'] = Xtrain.shape[1]
+
         if self._cfg.get('constrained', False):
             self._make_model_constrained()
         else:
@@ -55,8 +56,10 @@ class FeedforwardNN:
         input_layer = keras.layers.Input(shape=(cfg['n_input'],))
         layer = input_layer
         layer = self._make_dropout(layer)
-        layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
-        layer = self._make_dropout(layer)
+
+        if cfg['n_hidden'] > 0:
+            layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
+            layer = self._make_dropout(layer)
 
         output_activation = 'linear'
         loss = keras.losses.MeanAbsoluteError()
