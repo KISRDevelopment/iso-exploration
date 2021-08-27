@@ -49,7 +49,7 @@ def main():
 
     final_df = pd.concat(sdfs, axis=0)
     final_df[perc_cols] = final_df[perc_cols] / 100
-    final_df.to_csv("iso.csv", index=False)
+    final_df.to_csv("iso2.csv", index=False)
 
 def get_rows_to_extract():
 
