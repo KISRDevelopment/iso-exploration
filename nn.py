@@ -27,10 +27,14 @@ class FeedforwardNN:
         
         # normalize inputs and outputs for better convergence
         Xtrain, _, _ = zscore(Xtrain)
-        Xvalid,_,_ = zscore(Xvalid)
+
+        if Xvalid is not None:
+            Xvalid,_,_ = zscore(Xvalid)
 
         Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
-        Yvalid = (Yvalid - self._Ytrain_mu) / self._Ytrain_std
+
+        if Xvalid is not None:
+            Yvalid = (Yvalid - self._Ytrain_mu) / self._Ytrain_std
             
         if self._cfg.get('scramble', False):
             Xtrain = Xtrain[rng.permutation(Xtrain.shape[0]), :]
@@ -43,7 +47,7 @@ class FeedforwardNN:
         self._model.fit(Xtrain, 
                         Ytrain, 
                         batch_size=int(Xtrain.shape[0] * self._cfg['batch_size_p']),
-                        validation_data=(Xvalid, Yvalid),
+                        validation_data=(Xvalid, Yvalid) if Xvalid is not None else (),
                         epochs=self._cfg['n_epochs'], 
                         verbose=self._cfg['verbose'],
                         callbacks=callbacks)
