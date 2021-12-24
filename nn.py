@@ -121,7 +121,7 @@ class FeedforwardNN:
         return samples
 
     def _predict(self, X):
-        return self._model.predict(X) * self._Ytrain_std + self._Ytrain_mu
+        return self._model.predict(X, batch_size=100000) * self._Ytrain_std + self._Ytrain_mu
 
     def evaluate(self, X, Y):
         X,_,_ = zscore(X)

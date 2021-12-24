@@ -9,5 +9,6 @@
     "stochastic" : true,
     "dropout_p" : 0.5,
     "epsilon" : 0,
-    "n_samples" : 20
+    "n_samples" : 50,
+    "criteria" : "ei"
 }

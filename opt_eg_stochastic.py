@@ -56,34 +56,34 @@ def main(exp_cfg, model_cfg, output_path):
                 print(preds.shape)
 
                 best_ch = np.min(Ytrain[:,0], axis=0)
-                
-                # criteria: maximize P(ch < best_ch, ron > min_ron, yield > min_yield)
-                
                 ch_less_than_best = preds[:,:,0] < best_ch 
                 ron_more_than_min = preds[:,:,1] >= min_ron 
                 yield_more_than_min = preds[:,:,2] >= min_yield 
-                combined = ch_less_than_best * ron_more_than_min * yield_more_than_min
-                probs = np.mean(combined, axis=0)
-                next_ix = np.argmax(probs)
-                print("Max prob: ",  np.max(probs))
-                print("Next: %f,%f,%f,%f" % tuple(X[next_ix,:].tolist()))
 
-                # criteria: maximize E(I)
-                # I = best_ch - ch
-                # E(I) = best_ch - E(ch) under p(ch, ron > min_ron, yield > min_yield)
-                # ron_yield_greater_than_min = ron_more_than_min * yield_more_than_min
-                # valid_ch = preds[:,:,0] * ron_yield_greater_than_min
-                # denom = np.sum(ron_yield_greater_than_min, axis=0)
-                # print("Zero denom: %d" % np.sum(denom == 0))
-                # nonzero_ix = denom > 0
+                # criteria: maximize P(ch < best_ch, ron > min_ron, yield > min_yield)
+                if model_cfg['criteria'] == 'pi':
+                    
+                    combined = ch_less_than_best * ron_more_than_min * yield_more_than_min
+                    probs = np.mean(combined, axis=0)
+                    next_ix = np.argmax(probs)
+                    print("Max prob: ",  np.max(probs))
+                    print("Next: %f,%f,%f,%f" % tuple(X[next_ix,:].tolist()))
+                else:
+                    # criteria: maximize E(I)
+                    #I = best_ch - ch
+                    #E(I) = best_ch - E(ch) under p(ch, ron > min_ron, yield > min_yield)
+                    ron_yield_greater_than_min = ron_more_than_min * yield_more_than_min
+                    valid_ch = preds[:,:,0] * ron_yield_greater_than_min
+                    denom = np.sum(ron_yield_greater_than_min, axis=0)
+                    print("Zero denom: %d" % np.sum(denom == 0))
 
-                # e_ch = np.sum(valid_ch, axis=0) / denom 
-                # e_i = best_ch - e_ch 
-                # e_i = np.nan_to_num(e_i, nan=0)
+                    e_ch = np.sum(valid_ch, axis=0) / denom 
+                    e_i = best_ch - e_ch 
+                    e_i = np.nan_to_num(e_i, nan=0)
 
-                # next_ix = np.argmax(e_i)
-                # print("Max EI: ",  np.max(e_i))
-                # print("Next: %f,%f,%f,%f" % tuple(X[next_ix,:].tolist()))
+                    next_ix = np.argmax(e_i)
+                    print("Max EI: ",  np.max(e_i))
+                    print("Next: %f,%f,%f,%f" % tuple(X[next_ix,:].tolist()))
 
             else:
                 eligible_indecies = np.where(eligible_next_ix)[0]
