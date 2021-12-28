@@ -45,52 +45,42 @@ def main(exp_cfg, model_cfg, output_path):
             best_feasible_ch = np.min(Ytrain[feasible_ix,0], axis=0) if np.sum(feasible_ix) > 0 else np.inf
             print("Number of experiments: %d, best feasible CH: %f, latest: %s" % (len(chosen_ix), best_feasible_ch, Ytrain[-1,:]))
 
-            if model_cfg['epsilon'] < 1:
-                model.train(Xtrain, Ytrain)
-            
             # pick out a region of X that is eligible for exploration
             eligible_next_ix = determine_next_eligible_region(exp_cfg, Xtrain, X)
 
-            if rng.binomial(1, 1-model_cfg['epsilon']):
-                preds = model.predict(X, model_cfg['n_samples'])
-                print(preds.shape)
+            model.train(Xtrain, Ytrain)
 
-                best_ch = np.min(Ytrain[:,0], axis=0)
-                ch_less_than_best = preds[:,:,0] < best_ch 
-                ron_more_than_min = preds[:,:,1] >= min_ron 
-                yield_more_than_min = preds[:,:,2] >= min_yield 
+            preds = model.predict(X, model_cfg['n_samples'])
+            
+            ron_more_than_min = preds[:,:,1] >= min_ron 
+            yield_more_than_min = preds[:,:,2] >= min_yield 
 
-                # criteria: maximize P(ch < best_ch, ron > min_ron, yield > min_yield)
-                if model_cfg['criteria'] == 'pi':
-                    
-                    combined = ch_less_than_best * ron_more_than_min * yield_more_than_min
-                    probs = np.mean(combined, axis=0)
-                    probs[~eligible_next_ix] = 0
+            # [n_samples, n_space]
+            delta = ron_more_than_min * yield_more_than_min
 
-                    next_ix = np.argmax(probs)
-                    print("Max prob: ",  np.max(probs))
-                    print("Next: %f,%f,%f,%f" % tuple(X[next_ix,:].tolist()))
-                else:
-                    # criteria: maximize E(I)
-                    #I = best_ch - ch
-                    #E(I) = best_ch - E(ch) under p(ch, ron > min_ron, yield > min_yield)
-                    ron_yield_greater_than_min = ron_more_than_min * yield_more_than_min
-                    improvement = np.maximum(0, (best_ch - preds[:,:,0]))
+            # [n_samples, n_space]
+            best_ch = np.min(Ytrain[:,0], axis=0)
+            if np.isinf(best_feasible_ch):
+                best_feasible_ch = best_ch
+            
+            unconstrained = np.maximum(0, best_feasible_ch - preds[:,:,0])
 
-                    denom = np.sum(ron_yield_greater_than_min, axis=0)
-                    print("Zero denom: %d" % np.sum(denom == 0))
+            # [n_samples, n_space]
+            improvement = delta * unconstrained
 
-                    e_i = np.sum(improvement * ron_yield_greater_than_min, axis=0) / denom 
-                    e_i = np.nan_to_num(e_i, nan=0)
-                    e_i[~eligible_next_ix] = -10000000
-
-                    next_ix = np.argmax(e_i)
-                    print("Max EI: ",  np.max(e_i))
-                    print("Next: %f,%f,%f,%f" % tuple(X[next_ix,:].tolist()))
-
+            if model_cfg['criteria'] == 'pi':
+                improvement_greater_than_0 = improvement > 0 
+                criterion = np.mean(improvement_greater_than_0, axis=0)
             else:
-                eligible_indecies = np.where(eligible_next_ix)[0]
-                next_ix = rng.choice(eligible_indecies)
+                criterion = np.mean(improvement, axis=0)
+                
+            criterion[~eligible_next_ix] = -100000
+
+            ix = rng.permutation(criterion.shape[0])
+            next_ix = max(ix, key=lambda i: criterion[i])
+
+            print("Max criterion: ",  np.max(criterion))
+            print("Next: %f,%f,%f,%f" % tuple(X[next_ix,:].tolist()))
             
             chosen_ix.append(next_ix)
             
