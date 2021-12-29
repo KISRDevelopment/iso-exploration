@@ -61,8 +61,8 @@ def main(exp_cfg, model_cfg, output_path):
             # [n_samples, n_space]
             best_ch = np.min(Ytrain[:,0], axis=0)
             if np.isinf(best_feasible_ch):
-                best_feasible_ch = best_ch
-            
+               best_feasible_ch = best_ch
+            #best_feasible_ch = best_ch
             unconstrained = np.maximum(0, best_feasible_ch - preds[:,:,0])
 
             # [n_samples, n_space]
@@ -71,10 +71,14 @@ def main(exp_cfg, model_cfg, output_path):
             if model_cfg['criteria'] == 'pi':
                 improvement_greater_than_0 = improvement > 0 
                 criterion = np.mean(improvement_greater_than_0, axis=0)
+                criterion[~eligible_next_ix] = -100000
+            elif model_cfg['criteria'] == 'old-pi':
+                combined = ((best_feasible_ch - preds[:,:,0]) > 0) * ron_more_than_min * yield_more_than_min
+                criterion = np.mean(combined, axis=0)
+                criterion[~eligible_next_ix] = 0
             else:
                 criterion = np.mean(improvement, axis=0)
-                
-            criterion[~eligible_next_ix] = -100000
+                criterion[~eligible_next_ix] = -100000
 
             ix = rng.permutation(criterion.shape[0])
             next_ix = max(ix, key=lambda i: criterion[i])
