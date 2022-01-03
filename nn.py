@@ -7,10 +7,13 @@ def zscore(X):
 
     mu = np.mean(X, axis=0, keepdims=True)
     std = np.std(X, axis=0, ddof=1, keepdims=True)
-    Z = (X - mu) / std 
+    
+    return zscore_mu_std(X, mu, std)
+
+def zscore_mu_std(X, mu, std):
+    Z = (X - mu) / (1e-6+std) 
 
     return Z, mu, std 
-
 class FeedforwardNN:
 
     def __init__(self, cfg):
@@ -26,16 +29,14 @@ class FeedforwardNN:
         #print(self._model.summary())
         
         # normalize inputs and outputs for better convergence
-        Xtrain, _, _ = zscore(Xtrain)
-
+        Xtrain, self._Xtrain_mu, self._Xtrain_std = zscore(Xtrain)
         if Xvalid is not None:
-            Xvalid,_,_ = zscore(Xvalid)
+            Xvalid,_,_ = zscore_mu_std(Xvalid, self._Xtrain_mu, self._Xtrain_std)
 
         Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
-
         if Xvalid is not None:
-            Yvalid = (Yvalid - self._Ytrain_mu) / self._Ytrain_std
-            
+            Yvalid = zscore_mu_std(Yvalid, self._Ytrain_mu, self._Ytrain_std)
+
         if self._cfg.get('scramble', False):
             Xtrain = Xtrain[rng.permutation(Xtrain.shape[0]), :]
         
@@ -108,7 +109,7 @@ class FeedforwardNN:
         
     def predict(self, X, n_samples=1):
         
-        X,_,_ = zscore(X)
+        X,_,_ = zscore_mu_std(X, self._Xtrain_mu, self._Xtrain_std)
         if not self._cfg['stochastic']:
             return self._predict(X)
         
@@ -122,8 +123,3 @@ class FeedforwardNN:
 
     def _predict(self, X):
         return self._model.predict(X, batch_size=100000) * self._Ytrain_std + self._Ytrain_mu
-
-    def evaluate(self, X, Y):
-        X,_,_ = zscore(X)
-        Y = (Y - self._Ytrain_mu) / self._Ytrain_std
-        return self._model.evaluate(X, Y)
