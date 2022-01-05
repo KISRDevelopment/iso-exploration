@@ -1,12 +1,13 @@
 {
     "batch_size_p" : 0.1,
-    "n_epochs" : 50,
+    "n_epochs" : 500,
     "verbose" : false,
     "n_input" : 4,
     "n_hidden" : 10,
     "n_output" : 3,
-    "hidden_activation" : "tanh",
+    "hidden_activation" : "relu",
     "stochastic" : false,
-    "dropout_p" : 0.5,
-    "epsilon" : 0.00
+    "dropout_p" : 0.1,
+    "epsilon" : 0.00,
+    "n_samples" : 1
 }

@@ -1,7 +1,7 @@
 {
     "n_init_samples" : 10,
     "n_samples" : 100,
-    "n_reps" : 50,
+    "n_reps" : 25,
     "ch_std" : 0,
     "ron_std" : 0,
     "yield_std" : 0,

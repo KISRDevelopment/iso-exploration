@@ -60,7 +60,7 @@ class FeedforwardNN:
 
         input_layer = keras.layers.Input(shape=(cfg['n_input'],))
         layer = input_layer
-        layer = self._make_dropout(layer)
+#        layer = self._make_dropout(layer)
 
         if cfg['n_hidden'] > 0:
             layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
