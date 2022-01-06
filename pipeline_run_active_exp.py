@@ -3,7 +3,7 @@ import glob
 import json
 import os  
 
-exp_cfgs = ['exp_cfgs/noisy_83_99_constrained.json']
+exp_cfgs = glob.glob("exp_cfgs/*.json")
 cfgs = [
     'cfgs/pi.json', 
     'cfgs/ei.json',
@@ -20,6 +20,8 @@ for exp_cfg_path in exp_cfgs:
 
         with open(exp_cfg_path, 'r') as f:
             exp_cfg = json.load(f)
+
+        exp_cfg['n_reps'] = 50
 
         with open(model_cfg_path, 'r') as f:
             model_cfg = json.load(f)
