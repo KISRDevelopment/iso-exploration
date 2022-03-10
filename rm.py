@@ -84,6 +84,9 @@ class RegressionModel:
                 trans_layer = input_layer
             else:
                 trans_layer = keras.layers.Dense(1, activation='linear')(input_layer)
+            #trans_layer = keras.layers.Dense(cfg['n_hidden'], activation='tanh')(trans_layer)
+            #trans_layer = keras.layers.Dense(1, activation='linear')(trans_layer)
+
             transformation_layers.append(trans_layer)
             inputs.append(input_layer)
 
@@ -103,6 +106,9 @@ class RegressionModel:
             return r 
         
         interaction_layer = keras.layers.Lambda(transform)(transformed_inputs)
+
+        # just for debugging
+        #interaction_layer = keras.layers.Dense(cfg['n_hidden'], activation='tanh')(transformed_inputs)
 
         output_layer = keras.layers.Dense(cfg['n_output'], activation='linear')(interaction_layer)
         

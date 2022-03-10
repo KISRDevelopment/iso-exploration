@@ -26,6 +26,7 @@
         "n_epochs": 10000,
         "verbose": true,
         "n_input": 4,
+        "n_hidden" : 5,
         "n_output": 19,
         "patience": 50,
         "degree" : 2,
