@@ -1,0 +1,41 @@
+{
+    "output_cols": [
+        "process_Hydrogen",
+        "process_Methane",
+        "process_Ethane",
+        "process_Propane",
+        "process_i-Butane",
+        "process_n-Butane",
+        "process_i-Pentane",
+        "process_n-Pentane",
+        "process_Cyclopentane",
+        "process_22-Mbutane",
+        "process_23-Mbutane",
+        "process_2-Mpentane",
+        "process_3-Mpentane",
+        "process_n-Hexane",
+        "process_Mcyclopentan",
+        "process_Benzene",
+        "process_Cyclohexane",
+        "process_2-Mhexane",
+        "process_n-Heptane"
+    ],
+    "model": {
+        "name": "Linear (All Effects)",
+        "batch_size_p":1,
+        "n_epochs": 10000,
+        "verbose": true,
+        "n_input": 4,
+        "n_output": 19,
+        "patience": 50,
+        "degree" : 1,
+        "effects" : "all"
+    },
+    "hyperparams": {
+        "batch_size_p": [
+            1.0
+        ]
+    },
+    "folds": 5,
+    "dataset": "iso_train.csv"
+}

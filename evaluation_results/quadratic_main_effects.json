@@ -1,0 +1,62 @@
+{
+    "output_cols": [
+        "process_Hydrogen",
+        "process_Methane",
+        "process_Ethane",
+        "process_Propane",
+        "process_i-Butane",
+        "process_n-Butane",
+        "process_i-Pentane",
+        "process_n-Pentane",
+        "process_Cyclopentane",
+        "process_22-Mbutane",
+        "process_23-Mbutane",
+        "process_2-Mpentane",
+        "process_3-Mpentane",
+        "process_n-Hexane",
+        "process_Mcyclopentan",
+        "process_Benzene",
+        "process_Cyclohexane",
+        "process_2-Mhexane",
+        "process_n-Heptane"
+    ],
+    "model": {
+        "name": "Quadratic (Main Effects)",
+        "batch_size_p": 1,
+        "n_epochs": 10000,
+        "verbose": true,
+        "n_input": 4,
+        "n_output": 19,
+        "patience": 50,
+        "degree": 2,
+        "effects": "main_only"
+    },
+    "hyperparams": {
+        "batch_size_p": [
+            1.0
+        ]
+    },
+    "folds": 5,
+    "dataset": "iso_train.csv",
+    "test_mae_by_output": {
+        "process_Hydrogen": 1.3621401791261958e-05,
+        "process_Methane": 5.8462033038791026e-05,
+        "process_Ethane": 0.00029008569020594083,
+        "process_Propane": 0.0010114336738895973,
+        "process_i-Butane": 0.001380774943980425,
+        "process_n-Butane": 0.0008119307579935233,
+        "process_i-Pentane": 0.0031433182150593557,
+        "process_n-Pentane": 0.00361551113647083,
+        "process_Cyclopentane": 1.1080689210337595e-05,
+        "process_22-Mbutane": 0.007314408464736616,
+        "process_23-Mbutane": 0.0014168928267922368,
+        "process_2-Mpentane": 0.0012150089976039975,
+        "process_3-Mpentane": 0.001211025349438879,
+        "process_n-Hexane": 0.002547816882404113,
+        "process_Mcyclopentan": 0.001675520460064956,
+        "process_Benzene": 5.38921324924738e-06,
+        "process_Cyclohexane": 0.0012383105268310944,
+        "process_2-Mhexane": 0.0016630057008092585,
+        "process_n-Heptane": 0.0017147355010066082
+    }
+}

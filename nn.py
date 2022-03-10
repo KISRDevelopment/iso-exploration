@@ -35,7 +35,7 @@ class FeedforwardNN:
 
         Ytrain, self._Ytrain_mu, self._Ytrain_std = zscore(Ytrain)
         if Xvalid is not None:
-            Yvalid = zscore_mu_std(Yvalid, self._Ytrain_mu, self._Ytrain_std)
+            Yvalid,_,_  = zscore_mu_std(Yvalid, self._Ytrain_mu, self._Ytrain_std)
 
         if self._cfg.get('scramble', False):
             Xtrain = Xtrain[rng.permutation(Xtrain.shape[0]), :]
