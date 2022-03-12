@@ -94,4 +94,11 @@ class FeedforwardNN:
         return samples
 
     def _predict(self, X):
-        return self._model.predict(X, batch_size=100000) * self._Ytrain_std + self._Ytrain_mu
+        return self._model.predict(X, batch_size=X.shape[0]) * self._Ytrain_std + self._Ytrain_mu
+
+    def evaluate(self, X, Y):
+        X,_,_ = zscore_mu_std(X, self._Xtrain_mu, self._Xtrain_std)
+
+        Y = (Y - self._Ytrain_mu) / self._Ytrain_std
+        
+        return self._model.evaluate(X, Y)

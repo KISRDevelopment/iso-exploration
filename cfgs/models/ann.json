@@ -24,7 +24,7 @@
         "name": "ANN",
         "batch_size_p": 1,
         "n_epochs": 10000,
-        "verbose": true,
+        "verbose": false,
         "n_input": 4,
         "n_hidden": 20,
         "n_output": 19,
@@ -33,7 +33,6 @@
         "dropout_p": 0,
         "scramble": false,
         "patience": 50,
-        "features" : "load_ann_features",
         "module" : "nn"
     },
     "hyperparams": {
@@ -51,6 +50,5 @@
             1.0
         ]
     },
-    "folds": 5,
-    "dataset": "iso_train.csv"
+    "folds": 5
 }

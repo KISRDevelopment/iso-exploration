@@ -66,7 +66,7 @@ class RegressionModel:
             
             #[batchxd]
             transformed_input = np.hstack(tcols)
-            print(transformed_input.shape)
+            #print(transformed_input.shape)
             transformed_inputs.append(transformed_input)
         
         return transformed_inputs
@@ -119,7 +119,7 @@ class RegressionModel:
             loss=loss,
             optimizer=keras.optimizers.Nadam()
         )
-        print(model.summary())
+        #print(model.summary())
         
         self._model = model 
     
@@ -130,6 +130,13 @@ class RegressionModel:
         Xtest_inputs = self._transform(X)
         return self._model.predict(Xtest_inputs, batch_size=100000) * self._Ytrain_std + self._Ytrain_mu
         
+    def evaluate(self, X, Y):
+        X,_,_ = zscore_mu_std(X, self._Xtrain_mu, self._Xtrain_std)
+        Xtest_inputs = self._transform(X)
+
+        Y = (Y - self._Ytrain_mu) / self._Ytrain_std
+        
+        return self._model.evaluate(Xtest_inputs, Y)
 
 def create_full_permutation_matrix(n_inputs):
 

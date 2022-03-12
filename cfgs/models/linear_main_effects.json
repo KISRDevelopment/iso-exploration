@@ -24,7 +24,7 @@
         "name": "Linear (Main Effects)",
         "batch_size_p":1,
         "n_epochs": 10000,
-        "verbose": true,
+        "verbose": false,
         "n_input": 4,
         "n_output": 19,
         "patience": 50,
@@ -34,9 +34,10 @@
     },
     "hyperparams": {
         "batch_size_p": [
+            0.1,
+            0.5,
             1.0
         ]
     },
-    "folds": 5,
-    "dataset": "iso_train.csv"
+    "folds": 5
 }
