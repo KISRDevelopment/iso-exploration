@@ -9,6 +9,7 @@ import rm
 import itertools 
 from sklearn.model_selection import KFold
 import null_model
+import rbfm
 from multiprocessing import Pool 
 
 def main(path, split_path, output_path, n_processes=10):
@@ -57,7 +58,9 @@ def eval_model(packed):
         model = rm.RegressionModel(best_model_cfg)
     elif cfg['model']['module'] == 'null':
         model = null_model.NullModel(best_model_cfg)
-
+    elif cfg['model']['module'] == 'rbfm':
+        model = rbfm.RbfModel(best_model_cfg)
+    
     model.train(Xtrain, Ytrain, Xvalid, Yvalid)
     yhat = model.predict(Xtest)
     ae = np.abs(yhat - Ytest)
