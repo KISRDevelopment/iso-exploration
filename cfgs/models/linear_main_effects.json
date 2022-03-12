@@ -29,7 +29,8 @@
         "n_output": 19,
         "patience": 50,
         "degree" : 1,
-        "effects" : "main_only"
+        "effects" : "main_only",
+        "module" : "rm"
     },
     "hyperparams": {
         "batch_size_p": [

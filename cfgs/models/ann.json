@@ -22,7 +22,7 @@
     ],
     "model": {
         "name": "ANN",
-        "batch_size_p": 1.0,
+        "batch_size_p": 1,
         "n_epochs": 10000,
         "verbose": true,
         "n_input": 4,
@@ -33,7 +33,8 @@
         "dropout_p": 0,
         "scramble": false,
         "patience": 50,
-        "features" : "load_ann_features"
+        "features" : "load_ann_features",
+        "module" : "nn"
     },
     "hyperparams": {
         "n_hidden": [

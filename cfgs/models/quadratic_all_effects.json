@@ -30,7 +30,9 @@
         "n_output": 19,
         "patience": 50,
         "degree" : 2,
-        "effects" : "all"
+        "effects" : "all",
+
+        "module" : "rm"
     },
     "hyperparams": {
         "batch_size_p": [

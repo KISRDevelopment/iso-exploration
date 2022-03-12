@@ -22,11 +22,7 @@ class FeedforwardNN:
     def train(self, Xtrain, Ytrain, Xvalid=None, Yvalid=None):
         self._cfg['n_input'] = Xtrain.shape[1]
 
-        if self._cfg.get('constrained', False):
-            self._make_model_constrained()
-        else:
-            self._make_model()
-        #print(self._model.summary())
+        self._make_model()
         
         # normalize inputs and outputs for better convergence
         Xtrain, self._Xtrain_mu, self._Xtrain_std = zscore(Xtrain)
@@ -60,7 +56,6 @@ class FeedforwardNN:
 
         input_layer = keras.layers.Input(shape=(cfg['n_input'],))
         layer = input_layer
-#        layer = self._make_dropout(layer)
 
         if cfg['n_hidden'] > 0:
             layer = keras.layers.Dense(cfg['n_hidden'], activation=cfg['hidden_activation'])(layer)
@@ -78,29 +73,6 @@ class FeedforwardNN:
 
         self._model = model 
     
-    def _make_model_constrained(self):
-        cfg = self._cfg 
-        
-        keras.backend.clear_session()
-
-        input_layer = keras.layers.Input(shape=(cfg['n_input'],))
-        layer = self._make_dropout(input_layer)
-        preouts = []
-        for i in range(cfg['n_output']):
-            sub_nn = keras.layers.Dense(cfg['n_hidden'] // cfg['n_output'], activation=cfg['hidden_activation'])(layer)
-            sub_nn = self._make_dropout(sub_nn)
-            sub_nn = keras.layers.Dense(1, activation='linear')(sub_nn)
-            preouts.append(sub_nn)
-        output_layer = keras.layers.Concatenate()(preouts)
-        
-        model = keras.Model(input_layer, output_layer)
-        model.compile(
-            loss=keras.losses.MeanAbsoluteError(),
-            optimizer=keras.optimizers.Nadam()
-        )
-
-        self._model = model 
-
     def _make_dropout(self, input_layer):
         if self._cfg['stochastic']:
             return keras.layers.Dropout(self._cfg['dropout_p'])(input_layer, training=True)

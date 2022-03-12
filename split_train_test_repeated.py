@@ -61,6 +61,10 @@ for r in range(N_REPEATS):
         np.sum(split == 0) + np.sum(split == 1) + np.sum(split == 2),
         split.shape[0]))
 
+    assert np.sum(train_index & valid_index) == 0 
+    assert np.sum(train_index & test_index) == 0
+    assert np.sum(valid_index & test_index) == 0
+
     #counts = np.array([np.sum(split == s) for s in [0,1,2]])
     #print(counts/np.sum(counts))
 
@@ -71,4 +75,3 @@ unique_rows = np.unique(all_splits, axis=0)
 assert unique_rows.shape[0] == N_REPEATS
 
 np.save("splits.npy", all_splits)
-
