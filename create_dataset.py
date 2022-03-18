@@ -3,15 +3,19 @@ import pandas as pd
 import sys 
 import glob 
 import os 
+import re 
+import xmltodict
+def main(input_dir, output_file):
 
-def main():
-
-    rows_to_aliases = get_rows_to_extract()
-    perc_cols = get_perc_cols()
+    files = glob.glob("%s/*.xltm" % input_dir)
     
-    files = glob.glob("datasets/*.xltm")
-    #files = ['datasets/T1=160_.xltm']
-    selected_rows = list(rows_to_aliases.keys())
+    final_df = create_df(files)
+    
+    final_df.to_csv(output_file, index=False)
+
+def create_df(files):
+    
+    rows_spec_df = read_rows_spec()
 
     sdfs = []
     for file in files:
@@ -19,57 +23,77 @@ def main():
         if os.path.basename(file).startswith('~'):
             continue 
     
-        try:
-            df = pd.read_excel(file).set_index('Unnamed: 0')
-        except:
+        df = pd.read_excel(file)
+        df.index = read_tags(df['Unnamed: 0'])
+        
+        col_ix = ~pd.isnull(df.iloc[4]) & (np.arange(df.shape[1]) >= 4)
+        print("Number of configs tested: %d" % np.sum(col_ix))
+        #print(df.loc[rows_spec_df.index]) 
 
-            print("Ignoring %s" % file)
-            continue 
+        print("Processing %s" % file)
         
-        print("Processing %s" % file, end='')
-        df.index = df.index.str.strip()
-        
-        first_row = df.loc[selected_rows[0]]
-        col_ix = np.array([isinstance(v, np.floating) for v in first_row]) & ~pd.isnull(first_row)
-        
-        r = set(selected_rows) - set(df.index) 
-        if len(r) > 0:
-            print(file)
-            print("Not found in df: %d" % len(r))
-            print("\n".join(r))
-            exit(0)
+        sdf = df.loc[rows_spec_df.index, df.columns[col_ix]].copy().astype(np.floating)
 
-        df = df.loc[selected_rows, col_ix].copy()
-        print(df.shape)
-        df.index = [rows_to_aliases[r] for r in selected_rows]
-        df.columns = np.arange(len(df.columns))
-        
+        assert np.all(sdf.index == rows_spec_df.index)
+
+        sdf.columns = np.arange(len(sdf.columns))
+        sdf.index = rows_spec_df['alias']
+
         print(" Done")
-        sdfs.append(df.T)
+        sdfs.append(sdf.T)
 
     final_df = pd.concat(sdfs, axis=0)
+
+    perc_cols = list(rows_spec_df[rows_spec_df['perc_to_frac'] == 1]['alias'])
+
     final_df[perc_cols] = final_df[perc_cols] / 100
-    final_df.to_csv("iso2.csv", index=False)
-
-def get_rows_to_extract():
-
-    with open('rows_to_extract.txt', 'r') as f:
-        rows = [l.strip() for l in f]
     
+    return final_df 
 
-    with open('row_aliases.txt', 'r') as f:
-        aliases = [l.strip() for l in f]
-    
-    rows_to_aliases = dict(zip(rows, aliases))
+def read_tags(rows):
+    new_rows = []
+    for i, row in enumerate(rows):
+        if type(row) != str:
+            new_rows.append((None, None, i))
+            continue 
 
-    return rows_to_aliases
+        o = xmltodict.parse(row)
+        tag_name = ''
+        attr_name = ''
+        attr_value = ''
+        obj_path = ''
+        if 'UnisimTag' in o:
+            tag_name = 'UnisimTag'
+        elif 'UnisimElement' in o:
+            tag_name = 'UnisimElement'
+            
+        attr_name = '@uopUnisimObjectName'
+        attr_value = o[tag_name][attr_name]
+        obj_path_attr = '@uopUnisimObjectPath'
+        obj_path = o[tag_name][obj_path_attr]
 
-def get_perc_cols():
+        new_rows.append((tag_name, attr_name, attr_value, obj_path))
     
-    with open('perc_to_frac_cols.txt', 'r') as f:
-        cols = [l.strip() for l in f]
-    
-    return cols 
+    # s = pd.Series(new_rows)
+    # print(s[s.duplicated()])
+
+    assert len(new_rows) == len(set(new_rows))
+    return new_rows 
+
+def read_rows_spec():
+
+    df = pd.read_csv('rows.csv')
+    df.index = list(zip(df['tag_name'], df['attr_name'], df['attr_value'], df['obj_path']))
+
+    return df 
+
+def is_float(element):
+    try:
+        float(element)
+        return True
+    except ValueError:
+        return False
 
 if __name__ == "__main__":
-    main()
+    import sys 
+    main(sys.argv[1], sys.argv[2])
