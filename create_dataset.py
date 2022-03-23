@@ -7,11 +7,15 @@ import re
 import xmltodict
 def main(input_dir, output_file):
 
-    files = glob.glob("%s/*.xltm" % input_dir)
+    files = glob.glob("%s/*.xltm" % input_dir) + glob.glob("%s/*.xlsx"  % input_dir)
+    files = ['tmp/T1=130.xltm', 'tmp/T1=128.xltm']
+    files = ['datasets/T1=130.xltm', 'datasets/T1=128.xltm']
     
     final_df = create_df(files)
     
     final_df.to_csv(output_file, index=False)
+
+    print("Dataset size: %d" % final_df.shape[0])
 
 def create_df(files):
     
@@ -20,6 +24,7 @@ def create_df(files):
     sdfs = []
     for file in files:
         
+        print("Processing %s" % file)
         if os.path.basename(file).startswith('~'):
             continue 
     
@@ -30,9 +35,15 @@ def create_df(files):
         print("Number of configs tested: %d" % np.sum(col_ix))
         #print(df.loc[rows_spec_df.index]) 
 
-        print("Processing %s" % file)
+        sdf = df.loc[rows_spec_df.index, df.columns[col_ix]].copy()
+
+        empty_ix = np.sum(sdf == '<empty>', axis=0) > 0
         
-        sdf = df.loc[rows_spec_df.index, df.columns[col_ix]].copy().astype(np.floating)
+        if np.sum(empty_ix) == 0:
+            sdf = sdf.astype(np.floating)
+        else:
+            
+            sdf = sdf[sdf.columns[~empty_ix]].astype(np.floating)
 
         assert np.all(sdf.index == rows_spec_df.index)
 
@@ -74,9 +85,11 @@ def read_tags(rows):
 
         new_rows.append((tag_name, attr_name, attr_value, obj_path))
     
-    # s = pd.Series(new_rows)
-    # print(s[s.duplicated()])
+    s = pd.Series(new_rows)
+    for r in s[s.duplicated()]:
+        print(r)
 
+    
     assert len(new_rows) == len(set(new_rows))
     return new_rows 
 
