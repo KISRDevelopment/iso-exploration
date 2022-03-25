@@ -8,8 +8,8 @@ import xmltodict
 def main(input_dir, output_file):
 
     files = glob.glob("%s/*.xltm" % input_dir) + glob.glob("%s/*.xlsx"  % input_dir)
-    files = ['tmp/T1=130.xltm', 'tmp/T1=128.xltm']
-    files = ['datasets/T1=130.xltm', 'datasets/T1=128.xltm']
+    #files = ['tmp/T1=130.xltm', 'tmp/T1=128.xltm']
+    #files = ['datasets/T1=130.xltm', 'datasets/T1=128.xltm']
     
     final_df = create_df(files)
     
