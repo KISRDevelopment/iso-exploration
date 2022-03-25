@@ -3,7 +3,14 @@ import glob
 import json
 import os  
 
-exp_cfgs = glob.glob("exp_cfgs/*.json")
+dataset_path = 'r490.csv'
+output_path = 'traces/r490'
+
+os.makedirs(output_path, exist_ok=True)
+
+
+#exp_cfgs = glob.glob("exp_cfgs/*.json")
+exp_cfgs = ['exp_cfgs/noiseless_easy.json']
 cfgs = [
     'cfgs/pi.json', 
     'cfgs/ei.json',
@@ -26,5 +33,5 @@ for exp_cfg_path in exp_cfgs:
         with open(model_cfg_path, 'r') as f:
             model_cfg = json.load(f)
 
-        opt_mp.main(exp_cfg, model_cfg, "traces/%s_%s.json" % (exp_name, cfg_name))
+        opt_mp.main(dataset_path, exp_cfg, model_cfg, "%s/%s_%s.json" % (output_path, exp_name, cfg_name), n_processes=1)
         
