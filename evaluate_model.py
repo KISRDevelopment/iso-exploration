@@ -12,12 +12,12 @@ import null_model
 import rbfm
 from multiprocessing import Pool 
 
-def main(path, split_path, output_path, n_processes=10):
+def main(dataset_path, path, split_path, output_path, n_processes=10):
 
     with open(path, 'r') as f:
         cfg = json.load(f)
 
-    df = pd.read_csv('iso.csv')
+    df = pd.read_csv(dataset_path)
     X = np.array(df[['r1_temp', 'r2_temp', 'r1_pressure', 'r2_pressure']])
     Y = np.array(df[cfg['output_cols']])
 
