@@ -5,11 +5,10 @@
     "ch_std" : 0,
     "ron_std" : 0,
     "yield_std" : 0,
-    "min_ron" : 83,
-    "min_yield" : 99,
+    "min_ron" : 83.6,
+    "min_yield" : 98,
     "ch_rel_perc" : 5,
     "ron_delta" : 2.5,
     "yield_delta" : 2.5,
-
-    "max_selection_delta" : [1000, 1000, 1000, 1000]
+    "max_selection_delta" : [5, 5, 10, 10]
 }
