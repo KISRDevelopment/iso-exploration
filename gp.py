@@ -17,16 +17,20 @@ class GPModel:
         n_inputs = Xtrain.shape[1]
         n_outputs = Ytrain.shape[1]
 
-        K = GPy.util.multioutput.LCM(n_inputs, 
-                                 n_outputs, 
-                                 [GPy.kern.Matern52(n_inputs) for i in range(n_outputs)], 
-                                 W_rank=1)
+        # setup the Semi-Parameterized Latent Factor Model 
+        slfm_kernel = GPy.kern.RBF(1).prod(GPy.kern.Coregionalize(n_inputs, n_outputs, 
+            active_dims=[1], rank=1, name='B'), name='k0')
 
+        for i in range(1,n_outputs):
+            k = GPy.kern.RBF(1).prod(GPy.kern.Coregionalize(n_inputs, n_outputs, 
+                active_dims=[1], rank=1, name='B'), name='k%d' % i)
+            k.B.kappa.constrain_fixed(0)
+            slfm_kernel = slfm_kernel + k
+    
         m = GPy.models.GPCoregionalizedRegression([Xtrain for i in range(n_outputs)], 
                                                   [Ytrain[:,[i]] for i in range(n_outputs)],
-                                                  kernel=K)
+                                                  kernel=slfm_kernel)
             
-        m['.*B.*kappa'].constrain_fixed(1.)
         m.optimize()
 
         self._m = m 
