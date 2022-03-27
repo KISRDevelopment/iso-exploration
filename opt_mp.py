@@ -6,6 +6,7 @@ import numpy.random as rng
 import pandas as pd 
 import json
 import nn 
+import gp
 from multiprocessing import Pool 
 
 def determinstic(packed):
@@ -80,8 +81,13 @@ def stochastic(packed):
     n_init_samples = exp_cfg['n_init_samples']
     n_samples = exp_cfg['n_samples']
     
-    model = nn.FeedforwardNN(model_cfg)
-
+    module = model_cfg.get('module', 'nn')
+    if module == 'gp':
+        model = gp.GPModel(model_cfg)
+    elif module == 'nn':
+        model = nn.FeedforwardNN(model_cfg)
+     
+    
     # pick random points to seed the model
     chosen_ix = rng.choice(X.shape[0], n_init_samples, replace=False).tolist()
     observed_y = [sample(Y, exp_cfg, i) for i in chosen_ix]

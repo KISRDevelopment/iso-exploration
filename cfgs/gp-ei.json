@@ -1,0 +1,5 @@
+{
+    "n_samples" : 100,
+    "criteria" : "ei",
+    "module" : "gp"
+}
