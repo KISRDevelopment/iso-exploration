@@ -173,7 +173,7 @@ def main(dataset_path, exp_cfg, model_cfg, output_path, n_processes=32):
         func = determinstic
 
     with Pool(n_processes) as p:
-        results = p.map(func, [(exp_cfg, model_cfg, X, Y, i) for i in range(n_reps)])
+        results = p.map(func, [(exp_cfg, model_cfg, X, Y, i) for i in range(1)])
 
 
     traces = [r[0] for r in results]
@@ -227,9 +227,9 @@ def add_noise(value, std):
 
 if __name__ == "__main__":
     import sys 
-    exp_cfg_path = sys.argv[1]
-    model_cfg_path = sys.argv[2]
-    output_path = sys.argv[3]
+    exp_cfg_path = sys.argv[2]
+    model_cfg_path = sys.argv[3]
+    output_path = sys.argv[4]
 
     with open(exp_cfg_path, 'r') as f:
         exp_cfg = json.load(f)
@@ -237,4 +237,4 @@ if __name__ == "__main__":
     with open(model_cfg_path, 'r') as f:
         model_cfg = json.load(f)
 
-    main(exp_cfg, model_cfg, output_path)
+    main(sys.argv[1], exp_cfg, model_cfg, output_path, 1)
