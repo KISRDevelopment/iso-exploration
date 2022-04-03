@@ -4,3 +4,4 @@ iso-dataset.xlsx
 ~*
 tmp
 __pycache__
+preds_from_traces
