@@ -6,7 +6,6 @@ import numpy.random as rng
 import pandas as pd 
 import json
 import nn 
-import gp
 from multiprocessing import Pool 
 
 def determinstic(packed):
@@ -82,9 +81,7 @@ def stochastic(packed):
     n_samples = exp_cfg['n_samples']
     
     module = model_cfg.get('module', 'nn')
-    if module == 'gp':
-        model = gp.GPModel(model_cfg)
-    elif module == 'nn':
+    if module == 'nn':
         model = nn.FeedforwardNN(model_cfg)
      
     
@@ -173,7 +170,7 @@ def main(dataset_path, exp_cfg, model_cfg, output_path, n_processes=32):
         func = determinstic
 
     with Pool(n_processes) as p:
-        results = p.map(func, [(exp_cfg, model_cfg, X, Y, i) for i in range(1)])
+        results = p.map(func, [(exp_cfg, model_cfg, X, Y, i) for i in range(n_reps)])
 
 
     traces = [r[0] for r in results]

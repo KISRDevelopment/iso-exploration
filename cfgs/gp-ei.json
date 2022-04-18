@@ -1,6 +1,0 @@
-{
-    "n_samples" : 15,
-    "criteria" : "ei",
-    "module" : "gp",
-    "stochastic" : true
-}
