@@ -1,6 +1,6 @@
 # Modeling and active constrained optimization of C5/C6 isomerization via Artificial Neural Networks
 
-This repository contains the code, datasets, and results published in our paper that was published in the Chemical Engineering Research and Design journal.
+This repository contains the code, datasets, and results published in our [paper](https://www.sciencedirect.com/science/article/pii/S0263876222001770) that was published in the Chemical Engineering Research and Design journal.
 
 ## Scripts
 

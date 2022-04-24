@@ -1,0 +1,2 @@
+r490.csv filter=git-crypt diff=git-crypt
+datasets/** filter=git-crypt diff=git-crypt
