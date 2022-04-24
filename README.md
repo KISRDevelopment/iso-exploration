@@ -2,6 +2,8 @@
 
 This repository contains the code, datasets, and results published in our [paper](https://www.sciencedirect.com/science/article/pii/S0263876222001770) that was published in the Chemical Engineering Research and Design journal.
 
+_Note on Data_: While we wait for UniSim approval, we have encrypted the dataset files `r490.csv` and `datasets/*`. 
+
 ## Scripts
 
 - `create_dataset.py`: compiles raw UniSim result Excel input sheets into one comma delimited file, such as `r490.csv`.
